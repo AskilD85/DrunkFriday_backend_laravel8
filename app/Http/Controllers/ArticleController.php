@@ -26,25 +26,25 @@ class ArticleController extends Controller
        } else {
        	return response()->json([]);
        }
-    	
+
     }
 
     public function show($article)
     {
-       
+
         return response()->json($article, 200);
     }
 
     public function store(Request $request)
     {
         $article = Article::create($request->all());
-        
+
         $article_info = Article::select('title', 'body', 'user_id', 'category_id', 'active', 'type','id','city_id')
         	->where('id', $article->id)
         	->get();
     	$user = User::select('name')->where('id',$article_info[0]->user_id )->get();
         $categ = Category::select('name')->where('id',$article_info[0]->category_id)->get();
-        
+
         $data = array(
     		'link_id'	=> $article_info[0]->id,
 	    	'title'		=> $article_info[0]->title,
@@ -62,47 +62,48 @@ class ArticleController extends Controller
             $file->move(storage_path().'/images', $article_info[0]->user_id.'_myfile.img');
             return response()->json('{"ok":"ok"}');
         }
-        
-     
+
+
 
        /* if ($article) {
 			Mail::send(['html'=>'mail/addArticle'], $data, function($message) {
         	$message->to('askildar@yandex.ru')
 	    			->subject('Добавлен новый пост!');
 	        $message->from('info@master702.ru');
-	    	});	
+	    	});
 		}*/
-		
+
         return response()->json($foo, Response::HTTP_OK);
     }
-    
-   
+
+
      public function add(Request $request)
     {
         $article = Article::create($request->all());
         return response()->json($article, 200);
     }
-    
-    
-    
-    
+
+
+
+
     public function myfile(Request $request)
     {
 
+
           if($request->hasFile('myfile')) {
             $file = $request->file('myfile');
-           
+
             $file->move(storage_path().'/images', '222'.$file->getClientOriginalName());
             return response()->json('{"yes":"получилось"}');
         }
-        
+
         if(!$request->hasFile('myfile')) {
         	return 'no';
         }
-        
+
     }
-    
-    
+
+
 
     public function update(Request $request, Article $article)
     {
@@ -117,19 +118,19 @@ class ArticleController extends Controller
 
         return response()->json(null, 204);
     }
-    
+
     public function userCategory($id) {
-    	
+
     	$article = DB::table('articles')->where('articles.user_id', $id)
     		->join('categories', 'categories.id', '=', 'articles.category_id')
     		->select('articles.*','categories.name as category_name')
     		->orderBy('articles.updated_at', 'desc')
     		->get();
-    		
+
     	return response()->json($article, 200);
     }
-    
-    public function userArticles ($user_id) 
+
+    public function userArticles ($user_id)
     {
     	$articles = DB::table('articles')->where('user_id', $user_id)
     	->join('categories', 'categories.id', '=', 'articles.category_id')
@@ -137,13 +138,13 @@ class ArticleController extends Controller
     	->get();
     	return response()->json($articles, 200);
     }
-    
-    public function comments () 
+
+    public function comments ()
     {
-    	
+
     	return response()->json(Comment::all(), 200);
     }
-    
+
     public function userComments(Article $article, User $user )
     {
         //return $article;
@@ -155,21 +156,21 @@ class ArticleController extends Controller
         $category = Category::create($request->all());
         return response()->json($category, 200);
     }
-    
+
     public function detail($article)
     {
-    
+
     	$articles = DB::table('articles')->where('articles.id', $article)
             ->join('users', 'users.id', '=', 'articles.user_id')
             ->join('categories', 'categories.id', '=', 'articles.category_id')
             ->select('articles.*','users.name as author', 'categories.name as category_name')
             ->get();
             return response()->json($articles[0], 200);
-    } 
+    }
     /*-------АДМИНСКАЯ ЧАСТЬ-----------------*/
     public function adminArticles()
     {
-    
+
     	$article = DB::table('articles')
        ->join('categories', 'categories.id','=', 'articles.category_id')
        ->select('articles.*', 'categories.name as category_name')
@@ -180,8 +181,8 @@ class ArticleController extends Controller
        } else {
        	return response()->json([]);
        }
-    } 
-    
+    }
+
 }
 
 
