@@ -35,12 +35,12 @@ class ArticleController extends Controller
        } else {
        	return response()->json([]);
        }
-    	
+
     }
 
     public function show($article)
     {
-       
+
         return response()->json($article, 200);
     }
 
@@ -53,6 +53,7 @@ class ArticleController extends Controller
         ]);
         
         $article = Article::create($request->all());
+<<<<<<< HEAD
         
         
         //если есть image
@@ -64,6 +65,9 @@ class ArticleController extends Controller
         
         
         
+=======
+
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
         $article_info = Article::select('title', 'body', 'user_id', 'category_id', 'active', 'type','id','city_id')
         	->where('id', $article->id)
         	->get();
@@ -72,7 +76,7 @@ class ArticleController extends Controller
         	
     	$user = User::select('name')->where('id',$article_info[0]->user_id )->get();
         $categ = Category::select('name')->where('id',$article_info[0]->category_id)->get();
-        
+
         $data = array(
     		'link_id'	=> $article_info[0]->id,
 	    	'title'		=> $article_info[0]->title,
@@ -90,16 +94,23 @@ class ArticleController extends Controller
             $file = $request->file('myfile');
             $file->move(storage_path().'/images', $article_info[0]->user_id.'_myfile.img');
             return response()->json('{"ok":"ok"}');
+<<<<<<< HEAD
         }*/
         
+=======
+        }
+
+
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
 
        /* if ($article) {
 			Mail::send(['html'=>'mail/addArticle'], $data, function($message) {
         	$message->to('askildar@yandex.ru')
 	    			->subject('Добавлен новый пост!');
 	        $message->from('info@master702.ru');
-	    	});	
+	    	});
 		}*/
+<<<<<<< HEAD
 		
         return response()->json($data, Response::HTTP_OK);
     }
@@ -107,11 +118,19 @@ class ArticleController extends Controller
    
    
    
+=======
+
+        return response()->json($foo, Response::HTTP_OK);
+    }
+
+
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
      public function add(Request $request)
     {
         $article = Article::create($request->all());
         return response()->json($article, 200);
     }
+<<<<<<< HEAD
     
     
     
@@ -168,10 +187,17 @@ public function uploadFile(Request $request) {
     
     
     
+=======
+
+
+
+
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
     public function myfile(Request $request)
     {
 
 
+<<<<<<< HEAD
 
           if($request->hasFile('myfile')) {
             $file = $request->file('myfile');
@@ -185,15 +211,22 @@ public function uploadFile(Request $request) {
             $file->move(storage_path().'/images', $file->getClientOriginalName());
             return storage_path().'/images';
             return response()->json($file->getClientOriginalName());
+=======
+          if($request->hasFile('myfile')) {
+            $file = $request->file('myfile');
+
+            $file->move(storage_path().'/images', '222'.$file->getClientOriginalName());
+            return response()->json('{"yes":"получилось"}');
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
         }
-        
+
         if(!$request->hasFile('myfile')) {
         	return 'no';
         }
-        
+
     }
-    
-    
+
+
 
     public function update(Request $request, Article $article)
     {
@@ -208,19 +241,24 @@ public function uploadFile(Request $request) {
 
         return response()->json(null, 204);
     }
-    
+
     public function userCategory($id) {
+<<<<<<< HEAD
     	
     	$article = Article::where('articles.user_id', $id)
+=======
+
+    	$article = DB::table('articles')->where('articles.user_id', $id)
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
     		->join('categories', 'categories.id', '=', 'articles.category_id')
     		->select('articles.*','categories.name as category_name')
     		->orderBy('articles.updated_at', 'desc')
     		->get();
-    		
+
     	return response()->json($article, 200);
     }
-    
-    public function userArticles ($user_id) 
+
+    public function userArticles ($user_id)
     {
     	$articles =Article::where('user_id', $user_id)
     	->join('categories', 'categories.id', '=', 'articles.category_id')
@@ -228,13 +266,13 @@ public function uploadFile(Request $request) {
     	->get();
     	return response()->json($articles, 200);
     }
-    
-    public function comments () 
+
+    public function comments ()
     {
-    	
+
     	return response()->json(Comment::all(), 200);
     }
-    
+
     public function userComments(Article $article, User $user )
     {
         //return $article;
@@ -246,21 +284,26 @@ public function uploadFile(Request $request) {
         $category = Category::create($request->all());
         return response()->json($category, 200);
     }
-    
+
     public function detail($article)
     {
+<<<<<<< HEAD
     
     	$articles = Article::where('articles.id', $article)
+=======
+
+    	$articles = DB::table('articles')->where('articles.id', $article)
+>>>>>>> bc29111335e2638ff4ed1c502da693fcceca1f1f
             ->join('users', 'users.id', '=', 'articles.user_id')
             ->join('categories', 'categories.id', '=', 'articles.category_id')
             ->select('articles.*','users.name as author', 'categories.name as category_name')
             ->get();
             return response()->json($articles[0], 200);
-    } 
+    }
     /*-------АДМИНСКАЯ ЧАСТЬ-----------------*/
     public function adminArticles()
     {
-    
+
     	$article = DB::table('articles')
        ->join('categories', 'categories.id','=', 'articles.category_id')
        ->select('articles.*', 'categories.name as category_name')
@@ -271,8 +314,8 @@ public function uploadFile(Request $request) {
        } else {
        	return response()->json([]);
        }
-    } 
-    
+    }
+
 }
 
 
