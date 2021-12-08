@@ -13,10 +13,14 @@ class CreateArticlesTable extends Migration
      */
     public function up()
 {
-    Schema::create('articles', function (Blueprint $table) {
+     Schema::create('articles', function (Blueprint $table) {
         $table->increments('id');
         $table->string('title');
         $table->text('body');
+        $table->integer('active');
+        $table->integer('category_id');
+        $table->integer('user_id');
+        $table->string('type')->default('master');
         $table->timestamps();
     });
 }
@@ -28,6 +32,8 @@ class CreateArticlesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('articles');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+	    Schema::dropIfExists('articles');
+	    DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

@@ -1,14 +1,18 @@
 <?php
-
+  
 namespace App;
-
+  
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
-
-class Article extends Model implements HasMedia
+  
+class Post extends Model implements HasMedia
 {
-	use HasFactory, InteractsWithMedia;
-    protected $fillable = ['title', 'body', 'user_id', 'category_id', 'active', 'type','city_id',];
+    use HasFactory, InteractsWithMedia;
+  
+    protected $fillable = [
+        'title',
+        'body',
+    ];
 }

@@ -20,4 +20,4 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 Header set Access-Control-Allow-Origin "*"
-Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT,PATCH"

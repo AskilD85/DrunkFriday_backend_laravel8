@@ -61,7 +61,7 @@
 <div class="main">
 	<div class="header"><div class="header-title">Мой сервис</div> </div>
 	<div class="body">
-		<p>Пользователь <a target="_blank" href="http://master702.ru/#/Users/{{$id}}">{{ $comment_author }}</a> добавил комментарий под постом: <br />
+		<p>Пользователь <a target="_blank" href="http://master702.ru/#/Users/{{$comment_author_id}}">{{ $comment_author }}</a> добавил комментарий под постом: <br />
 			<i>{{$text}}</i>
 		</p>
 		<div class="btn-div">

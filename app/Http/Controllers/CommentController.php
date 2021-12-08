@@ -51,6 +51,7 @@ class CommentController extends Controller
 	    	'text'		=> $request->input('text'),
 	    	'name'		=> $user[0]->name,
 	    	'comment_author' => $comment_author[0]-> name,
+	    	'comment_author_id' => $response->user_id,
 	    	'id'		=> $user[0]->id
 	    	);
 

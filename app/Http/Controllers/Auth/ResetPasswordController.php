@@ -59,7 +59,15 @@ class ResetPasswordController extends Controller
 
 	public function  checkToken(Request $request) 
 	{	
-		$token = User::where('verify_token', $request->token)->first();
+		$this->validate($request, [
+            'token' => 'string',
+            'verify_token' => 'string',
+            ]);
+            
+            
+		// $token = User::where('verify_token','=', $request->token)->first();
+		$token = User::where('api_token','=', $request->token)->first();
+		
 		if (!$token) {
 			return response()->json(['result'=>'error', 'text'=> 'Ссылка больше не работает!']);
 		}

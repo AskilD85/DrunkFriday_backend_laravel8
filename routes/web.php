@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PostController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,6 +19,7 @@ Route::get('/', function () {
 
 
 Auth::routes();
+
 Route::get('/home', 'HomeController@index');
 
 Route::group(['domain' => 'localhost:4200/#/'], function () {
@@ -25,3 +27,7 @@ Route::group(['domain' => 'localhost:4200/#/'], function () {
 });
 
   
+  
+Route::get('posts',[PostController::class,'index'])->name('posts.index');
+Route::get('posts/create',[PostController::class,'create'])->name('posts.create');
+Route::post('posts/store',[PostController::class,'store'])->name('posts.store');

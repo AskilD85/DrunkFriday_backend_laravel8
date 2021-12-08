@@ -6,6 +6,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\VerifyEmail;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
 
 class User extends Authenticatable 
 {
@@ -20,7 +23,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'type', 'verify_token', 'status'
+        'name', 'email', 'password', 'type', 'ava','desc','phone', 'verify_token', 'status'
     ];
 
     /**
@@ -43,7 +46,7 @@ class User extends Authenticatable
     
     public function generateToken()
     {
-        $this->api_token = str_random(60);
+        $this->api_token = Str::random(60);
         $this->save();
 
         return $this->api_token;

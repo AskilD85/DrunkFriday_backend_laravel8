@@ -9,6 +9,7 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Mail;
+use Illuminate\Support\Facades\Auth;
 
 
 class BlogController extends Controller
@@ -20,9 +21,12 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $articles = Blog::all();
+        $articles = Blog::where('active',1)->orderBy('created_at', 'DESC')->get();
         return response()->json($articles, 200);
     }
+    
+    
+    
 /*показать  для определённого пользователя статьи*/
 	public function show_for_user($user_id)
 	{

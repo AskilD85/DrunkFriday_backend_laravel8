@@ -32,6 +32,24 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 
+//авторизация
+Route::post('login', 'Auth\LoginController@login');
+
+
+Route::group(['middleware' => ['web']], function () {
+    // your routes here
+    Route::get('articles/{city_id}', 'ArticleController@index');
+Route::get('articles/{article}', 'ArticleController@userArticles');
+Route::get('articles/detail/{article}', 'ArticleController@detail');
+
+});
+
+
+Route::get('articlesType', 'DataloadController@index');
+
+Route::post('articles/myfile', 'ArticleController@myfile');
+Route::post('articles/{token}', 'ArticleController@token');
+
 Route::group(['middleware' => ['auth:api'] ], function() {
     /*---БЛОГ---------------*/
         Route::post('blog', 'BlogController@create');
@@ -39,9 +57,10 @@ Route::group(['middleware' => ['auth:api'] ], function() {
     /*----------------------*/
 
     /*-----Загрузка файлов------------*/
-    Route::post('articles/myfile', 'ArticleController@myfile');
 
-    
+	// обновление данных пользователя
+    Route::post('users', 'UserController@update');
+
     /*--------------------------------*/
 
 
@@ -50,7 +69,6 @@ Route::group(['middleware' => ['auth:api'] ], function() {
     Route::put('articles/{article}', 'ArticleController@update');
     Route::delete('articles/{article}', 'ArticleController@delete');
     
-	Route::get('users/{user}', 'UserController@show');
 	
 	Route::get('category/{id}', 'ArticleController@userCategory');
 	Route::post('categories', 'ArticleController@addCategory');
@@ -74,8 +92,14 @@ Route::group(['middleware' => ['auth:api'] ], function() {
 	Route::post('admin/cities', 'CitiesController@create');
 	Route::delete('admin/cities/{city}', 'CitiesController@destroy');
 	
+	// загрузка файла
+	Route::post('uploadFile', 'ArticleController@uploadFile');
 	
 });
+Route::get('getFile/{id}', 'FileController@getFile');
+
+
+
 Route::get('blog', 'BlogController@index');
 
 
@@ -99,9 +123,6 @@ Route::get('categories/{category}', 'CategoryController@show');
 
 
 
-Route::get('articles/{city_id}', 'ArticleController@index');
-Route::get('articles/{article}', 'ArticleController@userArticles');
-Route::get('articles/detail/{article}', 'ArticleController@detail');
 
 
 Route::get('randomimg', 'RandompictureController@randomimg');
@@ -109,15 +130,16 @@ Route::get('randomuser', 'RandompictureController@randomuser');
 
 Route::post('register', 'Auth\RegisterController@register');
 
-Route::post('login', 'Auth\LoginController@login');
 
-Route::post('logout', 'Auth\LoginController@logout');
+Route::get('logout', 'Auth\LoginController@logout');
 
 Route::get('comments/{article}/{user}', 'CommentController@show');
 
 Route::post('appeals', 'AppealController@create');
 
 Route::post('sendVerifyEmail', 'Auth\RegisterController@sendVerifyEmail');
+
+Route::get('checktoken', 'Auth\LoginController@checkToken');
 
 
 
