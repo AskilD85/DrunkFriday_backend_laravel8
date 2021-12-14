@@ -20,8 +20,8 @@ class CreateFilesTable extends Migration
             $table->string('model_type')->comment('тип модели');
             $table->string('collection_name')->comment('имя коллекции');
             $table->string('file_name')->comment('имя загружаемого файла');
-            $table->unsignedBigInteger('size');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('size');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
@@ -34,12 +34,9 @@ class CreateFilesTable extends Migration
      */
     public function down()
     {
-
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::table('files', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
-	    Schema::dropIfExists('files');
+        Schema::dropIfExists('files');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
     }
 }

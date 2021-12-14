@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddCityIdColumnToArticles extends Migration
+class UpdateArticlesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddCityIdColumnToArticles extends Migration
      */
     public function up()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->integer('city_id');
-        });
+         Schema::table('articles', function (Blueprint $table) {
+            $table->foreign('city_id')->references('id')->on('cities');
+         });
     }
 
     /**
@@ -26,7 +26,7 @@ class AddCityIdColumnToArticles extends Migration
     public function down()
     {
         Schema::table('articles', function (Blueprint $table) {
-            //
+        $table->dropColumn('city_id');
         });
     }
 }

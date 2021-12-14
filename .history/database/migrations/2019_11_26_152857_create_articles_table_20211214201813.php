@@ -14,13 +14,14 @@ class CreateArticlesTable extends Migration
     public function up()
 {
      Schema::create('articles', function (Blueprint $table) {
-        $table->bigIncrements('id');
+        $table->increments('id');
         $table->string('title');
         $table->text('body');
         $table->integer('active')->default('0');
         $table->integer('category_id');
         $table->integer('user_id');
         $table->string('type')->default('1');
+        $table->foreign('city_id')->references('id')->on('cities');
         $table->timestamps();
     });
 }
@@ -32,8 +33,8 @@ class CreateArticlesTable extends Migration
      */
     public function down()
     {
-        // DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 	    Schema::dropIfExists('articles');
-	    // DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+	    DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
