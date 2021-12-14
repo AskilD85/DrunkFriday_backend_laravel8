@@ -6,6 +6,15 @@ use Illuminate\Http\Request;
 
 use App\Category;
 use App\User;
+use App\Comment;
+use Illuminate\Http\Response;
+use Mail;
+use App\Models\File\File;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Storage;
+
 
 class CategoryController extends Controller
 {
@@ -25,9 +34,10 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+     public function create(Request $request)
     {
-        //
+        $category = Category::create($request->all());
+        return response()->json($category,  Response::HTTP_OK);
     }
 
     /**

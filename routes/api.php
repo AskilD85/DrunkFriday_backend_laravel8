@@ -50,6 +50,12 @@ Route::get('articlesType', 'DataloadController@index');
 Route::post('articles/myfile', 'ArticleController@myfile');
 Route::post('articles/{token}', 'ArticleController@token');
 
+
+
+
+
+/*-----API----------------*/
+
 Route::group(['middleware' => ['auth:api'] ], function() {
     /*---БЛОГ---------------*/
         Route::post('blog', 'BlogController@create');
@@ -63,15 +69,13 @@ Route::group(['middleware' => ['auth:api'] ], function() {
 
     /*--------------------------------*/
 
-
-
     Route::post('articles', 'ArticleController@store');
     Route::put('articles/{article}', 'ArticleController@update');
     Route::delete('articles/{article}', 'ArticleController@delete');
     
-	
+	/*КАТЕГОРИИ*/
 	Route::get('category/{id}', 'ArticleController@userCategory');
-	Route::post('categories', 'ArticleController@addCategory');
+	Route::post('categories', 'CategoryController@create');
 	Route::delete('categories/{category}', 'CategoryController@destroy');
 	
 	Route::post('comments', 'CommentController@create');
@@ -95,7 +99,16 @@ Route::group(['middleware' => ['auth:api'] ], function() {
 	// загрузка файла
 	Route::post('uploadFile', 'ArticleController@uploadFile');
 	
+	// добавление типа объявления
+
+	Route::post('types', 'ArticleController@addType');
+	Route::delete('types', 'ArticleController@destroyType');
+	
 });
+
+
+Route::get('types', 'ArticleController@getTypes');
+
 Route::get('getFile/{id}', 'FileController@getFile');
 
 

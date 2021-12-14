@@ -17,10 +17,11 @@ class CreateArticlesTable extends Migration
         $table->increments('id');
         $table->string('title');
         $table->text('body');
-        $table->integer('active');
+        $table->integer('active')->default('0');
         $table->integer('category_id');
         $table->integer('user_id');
-        $table->string('type')->default('master');
+        $table->string('type')->default('1');
+        $table->foreign('city_id')->references('id')->on('cities');
         $table->timestamps();
     });
 }

@@ -5,6 +5,7 @@ use App\Article;
 use App\Category;
 use App\Comment;
 use App\User;
+use App\ArticleType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,7 +31,7 @@ class ArticleController extends Controller
        ->select('articles.*', 'categories.name as category_name')
        ->orderBy('updated_at', 'desc')
        ->get();
-       if ($article->count() !== 0) {
+       if ($article->count() > 0) {
        		return response()->json($article, 200);
        } else {
        	return response()->json([]);
@@ -49,7 +50,6 @@ class ArticleController extends Controller
     	 $valiator = $request->validate([
             'title' => 'required',
             'body' => 'required',
-            'image' => 'required',
         ]);
         
         $article = Article::create($request->all());
@@ -63,7 +63,7 @@ class ArticleController extends Controller
         
         
         
-        /*
+        
         $article_info = Article::select('title', 'body', 'user_id', 'category_id', 'active', 'type','id','city_id')
         	->where('id', $article->id)
         	->get();
@@ -72,7 +72,7 @@ class ArticleController extends Controller
         	
     	$user = User::select('name')->where('id',$article_info[0]->user_id )->get();
         $categ = Category::select('name')->where('id',$article_info[0]->category_id)->get();
-        */
+        
         $data = array(
     		'link_id'	=> $article_info[0]->id,
 	    	'title'		=> $article_info[0]->title,
@@ -83,16 +83,7 @@ class ArticleController extends Controller
 	    	'user_id'	=> $article_info[0]->user_id,
 	    	'city_id'	=> $article_info[0]->city_id,
 	    	);
-
-		
-/*
-        if($request->hasFile('myfile')) {
-            $file = $request->file('myfile');
-            $file->move(storage_path().'/images', $article_info[0]->user_id.'_myfile.img');
-            return response()->json('{"ok":"ok"}');
-        }*/
-        
-
+  
        /* if ($article) {
 			Mail::send(['html'=>'mail/addArticle'], $data, function($message) {
         	$message->to('askildar@yandex.ru')
@@ -209,6 +200,8 @@ public function uploadFile(Request $request) {
         return response()->json(null, 204);
     }
     
+    
+    
     public function userCategory($id) {
     	
     	$article = Article::where('articles.user_id', $id)
@@ -241,12 +234,8 @@ public function uploadFile(Request $request) {
         $comment = Comment::where('user_id', $user)->where('article_id', $article)->get();
         return response()->json($comment, 200);
     }
-     public function addCategory(Request $request)
-    {
-        $category = Category::create($request->all());
-        return response()->json($category, 200);
-    }
     
+
     public function detail($article)
     {
     
@@ -272,6 +261,51 @@ public function uploadFile(Request $request) {
        	return response()->json([]);
        }
     } 
+    
+    
+    
+   	public function addType(Request $request)
+    {
+    	 $valiator = $request->validate([
+            'name' => 'required',
+            'author_id' => 'required',
+        ]);
+        
+        $type = ArticleType::create($request->all());
+        
+        
+        //если есть image
+       if($request->hasFile('image') && $request->file('image')->isValid()){
+            $type->addMediaFromRequest('image')->toMediaCollection('images');
+        }
+        
+        
+        
+        
+        
+        $type_info = ArticleType::select('name', 'author_id')
+        	->where('id', $type->id)
+        	->get();
+        	
+        	
+        	
+    	$user = User::select('name')->where('id', $request->author_id )->get();
+
+        $data = array(
+    		'name'	=> $type_info[0]->name
+	    	);
+
+		
+        return response()->json($data, Response::HTTP_OK);
+    }
+   
+	public function getTypes()
+    {
+    	
+    	$articleType = ArticleType::all();
+    	
+    	return response()->json($articleType, 200);
+    }
     
 }
 

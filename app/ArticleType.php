@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ArticleType extends Model
 {
-    protected $fillable = ['name', 'is_active'];
+    protected $fillable = ['name', 'author_id'];
 }
