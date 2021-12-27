@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Modules\File;
 
 use App\File;
 use App\User;

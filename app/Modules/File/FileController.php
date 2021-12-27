@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Modules\File;
 
 use App\Article;
 use App\Category;
@@ -14,8 +14,8 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use App\Services\FileService;
-use App\Resources\FileResource;
+use App\FileService;
+
 
 class FileController extends Controller
 {
@@ -118,41 +118,14 @@ class FileController extends Controller
 
  public function uploadFile(Request $request)
     {
+    	return response()->json('333');
     	
-      $input = $request->all();
-        $client = File::create($input);
-        if($request->hasFile('image') && $request->file('image')->isValid()){
-            $client->addMediaFromRequest('image')->toMediaCollection('avatar');
-        }	
-    	return $client;
-    	
-    	
-
-    if(!$request->hasFile('image')) {
-        return response()->json(['upload_file_not_found'], 400);
-    }
-    $file = new File;
-    $file = $request->file('image');
-   
-
-    if(!$file->isValid()) {
-        return response()->json(['invalid_file_upload'], 400);
-    }
-    
-    // $path = public_path() . '/storage/images/';
-    $path = Storage::putFileAs('avatars/'.auth('api')->user()->id, $request->file('image'), $file->getClientOriginalName() );
-    
-    
-	$file->addMedia($path)->toMediaCollection('images');
-
-   
-    return response()->json('/storage/app/'.$path);
-       /* return new FileResource(
+        return new FileResource(
             $this->fileService->upload(
-                $file,
+                $request->file('file'),
                 Auth::user()
             )
-        );*/
+        );
     }
     
     

@@ -22,7 +22,7 @@ class DataloadController extends Controller
     public function index()
     {
     	
-    	$articleType = ArticleType::where('is_active','Y')->get();
+    	$articleType = ArticleType::where('active','1')->get();
     	
     	return response()->json($articleType, 200);
     }

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mail;
 
-use App\Models\File\File;
+use App\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,9 +41,11 @@ class ArticleController extends Controller
 
     public function show($article)
     {
-       
         return response()->json($article, 200);
     }
+
+
+
 
     public function store(Request $request)
     {
@@ -55,10 +57,7 @@ class ArticleController extends Controller
         $article = Article::create($request->all());
         
         
-        //если есть image
-       if($request->hasFile('image') && $request->file('image')->isValid()){
-            $article->addMediaFromRequest('image')->toMediaCollection('images');
-        }
+       
         
         
         
@@ -73,16 +72,22 @@ class ArticleController extends Controller
     	$user = User::select('name')->where('id',$article_info[0]->user_id )->get();
         $categ = Category::select('name')->where('id',$article_info[0]->category_id)->get();
         
+        //если есть image
+        if($request->hasFile('image') && $request->file('image')->isValid()){
+           $article->addMediaFromRequest('image')->toMediaCollection('images');
+        }
         $data = array(
     		'link_id'	=> $article_info[0]->id,
 	    	'title'		=> $article_info[0]->title,
 	    	'text'		=> $article_info[0]->body,
 	    	'type'		=> $article_info[0]->type,
 	    	'username'	=> $user[0]->name,
-	    	'categ_name'=> $categ[0]->name,
-	    	'user_id'	=> $article_info[0]->user_id,
+	    	'categ_name'=> $categ ? $categ[0]->name: null,
+	    	'user_id'	=> $article_info ? $article_info[0]->user_id: null,
 	    	'city_id'	=> $article_info[0]->city_id,
+	    	'img_url' => $article->getFirstMediaUrl('images')
 	    	);
+	    
   
        /* if ($article) {
 			Mail::send(['html'=>'mail/addArticle'], $data, function($message) {
@@ -92,6 +97,9 @@ class ArticleController extends Controller
 	    	});	
 		}*/
 		
+      
+
+        // return $yy->getFirstMediaUrl();
         return response()->json($data, Response::HTTP_OK);
     }
    
@@ -130,10 +138,14 @@ public function uploadFile(Request $request) {
     return response()->json('storage/app/'.$path);
  }
     
+    
+    
+    
  public function getFile(Request $request) {
 
 
 
+	$mediaItems = $yourModel->getMedia();
 	$exists = Storage::disk('public')->exists('file.jpg');
 
     if(!$request->hasFile('image')) {

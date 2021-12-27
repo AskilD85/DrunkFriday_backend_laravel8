@@ -2,7 +2,6 @@
 Use App\Article;
 Use App\Randompik;
 use Illuminate\Http\Request;
-use App\Http\Controllers\ArticleController;
 use App\Http\Middleware\Cors;
 
 header('Access-Control-Allow-Origin: *');
@@ -97,7 +96,7 @@ Route::group(['middleware' => ['auth:api'] ], function() {
 	Route::delete('admin/cities/{city}', 'CitiesController@destroy');
 	
 	// загрузка файла
-	Route::post('uploadFile', 'ArticleController@uploadFile');
+	Route::post('uploadFile', 'FileController@uploadFile');
 	
 	// добавление типа объявления
 
