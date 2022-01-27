@@ -71,38 +71,38 @@ Route::group(['middleware' => ['auth:api'] ], function() {
     Route::post('articles', 'ArticleController@store');
     Route::put('articles/{article}', 'ArticleController@update');
     Route::delete('articles/{article}', 'ArticleController@delete');
-    
+
 	/*КАТЕГОРИИ*/
 	Route::get('category/{id}', 'ArticleController@userCategory');
 	Route::post('categories', 'CategoryController@create');
 	Route::delete('categories/{category}', 'CategoryController@destroy');
-	
+
 	Route::post('comments', 'CommentController@create');
 	Route::get('comments/{article}/{user}', 'CommentController@show');
 	Route::delete('comments/{comment}', 'CommentController@destroy');
 	Route::get('response', 'ResponseController@index');
 
-	
+
 	Route::get('appeals', 'AppealController@index');
 	Route::delete('appeals/{appeal}', 'AppealController@destroy');
-	
+
 	Route::post('subscribes', 'SubscribeController@store');
 	Route::post('subscribes/{id}', 'SubscribeController@show');
 	Route::delete('subscribes/{subscribe}', 'SubscribeController@destroy');
 	/*----АДМИНСКАЯ ЧАСТЬ-------------------*/
 	Route::get('admin/articles', 'ArticleController@adminArticles');
-	
+
 	Route::post('admin/cities', 'CitiesController@create');
 	Route::delete('admin/cities/{city}', 'CitiesController@destroy');
-	
+
 	// загрузка файла
 	Route::post('uploadFile', 'FileController@uploadFile');
-	
+
 	// добавление типа объявления
 
 	Route::post('types', 'ArticleController@addType');
 	Route::delete('types', 'ArticleController@destroyType');
-	
+
 });
 
 
@@ -127,7 +127,7 @@ Route::get('cities', 'CitiesController@index');
 
 Route::get('users', 'UserController@index');
 Route::get('users/{user}', 'UserController@show');
-	
+
 
 /*===========================================================*/
 Route::get('categories', 'CategoryController@index');
@@ -153,6 +153,11 @@ Route::post('sendVerifyEmail', 'Auth\RegisterController@sendVerifyEmail');
 
 Route::get('checktoken', 'Auth\LoginController@checkToken');
 
+
+Route::get('cars', 'CarController@index');
+Route::post('cars', 'CarController@add');
+Route::delete('cars/{car}', 'CarController@destroy');
+Route::put('cars/{car}', 'CarController@update');
 
 
 
