@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mail;
-
 use App\File;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Auth;
+use App\Resources\ArticleResource;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -28,13 +28,24 @@ class ArticleController extends Controller
        	['city_id','=',$city_id]
        	])
        ->join('categories', 'categories.id','=', 'articles.category_id')
-       ->select('articles.*', 'categories.name as category_name')
-       ->orderBy('updated_at', 'desc')
+       ->join('users', 'users.id','=', 'articles.user_id')
+       ->join('article_types', 'article_types.id','=', 'articles.type')
+       ->select('articles.title',
+    			'articles.body', 
+    			'categories.name as category_name',
+    			'users.name as username',
+    			'article_types.name as artycleType'
+    			,'articles.updated_at'
+    			,'articles.id',
+    			'articles.type',
+    			'articles.active',
+    			'articles.category_id')
+       ->orderBy('articles.updated_at', 'desc')
        ->get();
        if ($article->count() > 0) {
-       		return response()->json($article, 200);
+       	  return response()->json(ArticleResource::collection($article), Response::HTTP_OK);
        } else {
-       	return response()->json([]);
+       	return response()->json([],Response::HTTP_OK);
        }
     	
     }
@@ -49,43 +60,49 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-    	 $valiator = $request->validate([
-            'title' => 'required',
-            'body' => 'required',
+
+    	 $this->validate($request,[
+            'title' 	=> 'required',
+            'body'		=> 'required',
+            'city_id'	=> 'required',
+            
         ]);
+        $img_url = null;
+
+        $article = Article::create( 
+        	    ['title'	=>$request->title,
+        	    'body'		=>$request->body,
+        	    'user_id'	=>$request->user_id,
+        	    'category_id'=>$request->category_id,
+        	    'active'	=>$request->active,
+        	    'type'		=>$request->type,
+        	    'city_id'	=>$request->city_id
+        	    ]
+        	 );
         
-        $article = Article::create($request->all());
-        
-        
-       
-        
-        
-        
-        
-        
-        $article_info = Article::select('title', 'body', 'user_id', 'category_id', 'active', 'type','id','city_id')
-        	->where('id', $article->id)
-        	->get();
-        	
-        	
-        	
-    	$user = User::select('name')->where('id',$article_info[0]->user_id )->get();
-        $categ = Category::select('name')->where('id',$article_info[0]->category_id)->get();
-        
+     
+    	$user = Auth::user();
+
         //если есть image
-        if($request->hasFile('image') && $request->file('image')->isValid()){
+        if($request->hasFile('image') && $request->file('image')->isValid())
+        {
            $article->addMediaFromRequest('image')->toMediaCollection('images');
+           $img_url =  $article->getMedia('images')->last()->getUrl('thumb_200x200');
         }
+        
+
         $data = array(
-    		'link_id'	=> $article_info[0]->id,
-	    	'title'		=> $article_info[0]->title,
-	    	'text'		=> $article_info[0]->body,
-	    	'type'		=> $article_info[0]->type,
-	    	'username'	=> $user[0]->name,
-	    	'categ_name'=> $categ ? $categ[0]->name: null,
-	    	'user_id'	=> $article_info ? $article_info[0]->user_id: null,
-	    	'city_id'	=> $article_info[0]->city_id,
-	    	'img_url' => $article->getFirstMediaUrl('images')
+    		'link_id'	=> $article->id,
+	    	'title'		=> $article->title,
+	    	'body'		=> $article->body,
+	    	'type'		=> $article->type,
+	    	'username'	=> $user->name,
+	    	'category_name'=> Category::find($request->category_id)->name,
+	    	'user_id'	=> $user->id,
+	    	'city_id'	=> $article->city_id,
+	    	'created_at'=>$article->created_at,
+	    	'updated_at'=>$article->updated_at,
+	    	'img_url' => $img_url
 	    	);
 	    
   
@@ -229,9 +246,16 @@ public function uploadFile(Request $request) {
     {
     	$articles =Article::where('user_id', $user_id)
     	->join('categories', 'categories.id', '=', 'articles.category_id')
-    	->select('articles.*', 'categories.name as category_name')
+    	->join('article_types', 'article_types.id','=', 'articles.type')
+    	->select('articles.*'
+    			,'categories.name as category_name'
+    			,'article_types.name as artycleType'
+)
+    	->orderBy('articles.updated_at', 'desc')
     	->get();
-    	return response()->json($articles, 200);
+    	
+    	return ArticleResource::collection($articles);
+    	// return response()->json($articles, 200);
     }
     
     public function comments () 
@@ -248,16 +272,40 @@ public function uploadFile(Request $request) {
     }
     
 
-    public function detail($article)
+
+
+
+
+    public function detail(Article $article)
     {
-    
+    	
+    	return new ArticleResource($article);
+    	$img = Article::find($article);
+    	
+    	 $img->getFirstMediaUrl('images');
+    	
+
     	$articles = Article::where('articles.id', $article)
             ->join('users', 'users.id', '=', 'articles.user_id')
             ->join('categories', 'categories.id', '=', 'articles.category_id')
             ->select('articles.*','users.name as author', 'categories.name as category_name')
             ->get();
+            
+            if ($articles->count() > 0) {
+       	  return response()->json(ArticleResource::collection($articles)[0], Response::HTTP_OK);
+       } else {
+       	return response()->json([],Response::HTTP_OK);
+       } 
+        // $articles->getFirstMediaUrl();
             return response()->json($articles[0], 200);
     } 
+    
+    
+    
+    
+    
+    
+    
     /*-------АДМИНСКАЯ ЧАСТЬ-----------------*/
     public function adminArticles()
     {

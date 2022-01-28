@@ -37,8 +37,8 @@ Route::post('login', 'Auth\LoginController@login');
 
 Route::group(['middleware' => ['web']], function () {
     // your routes here
-    Route::get('articles/{city_id}', 'ArticleController@index');
-Route::get('articles/{article}', 'ArticleController@userArticles');
+Route::get('articles/{city_id}', 'ArticleController@index');
+Route::get('articles/user/{article}', 'ArticleController@userArticles');
 Route::get('articles/detail/{article}', 'ArticleController@detail');
 
 });
@@ -86,9 +86,17 @@ Route::group(['middleware' => ['auth:api'] ], function() {
 	Route::get('appeals', 'AppealController@index');
 	Route::delete('appeals/{appeal}', 'AppealController@destroy');
 	
+	
+	// подписки на услуги
 	Route::post('subscribes', 'SubscribeController@store');
 	Route::post('subscribes/{id}', 'SubscribeController@show');
 	Route::delete('subscribes/{subscribe}', 'SubscribeController@destroy');
+	
+	
+	
+	
+	
+	
 	/*----АДМИНСКАЯ ЧАСТЬ-------------------*/
 	Route::get('admin/articles', 'ArticleController@adminArticles');
 	

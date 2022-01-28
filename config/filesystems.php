@@ -74,7 +74,7 @@ return [
         'media' => [
             'driver' => 'local',
             'root'   => public_path('app/media'),
-            'url'    => '/media',
+            'url'    => env('APP_URL').'public/app/media',
         ],
 
     ],

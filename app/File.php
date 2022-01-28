@@ -19,6 +19,7 @@ final class File extends Model implements HasMedia
 	use HasFactory,InteractsWithMedia;
 	
 	protected $fillable= ['title','body']
+    
     public function user()
     {
         $this->hasOne(User::class, 'id', 'user_id');
