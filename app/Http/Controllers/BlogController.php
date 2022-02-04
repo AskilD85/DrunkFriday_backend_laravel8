@@ -5,6 +5,7 @@ use App\Article;
 use App\Blog;
 use App\Category;
 use App\Comment;
+use App\Resources\BlogResource;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -21,28 +22,45 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $articles = Blog::where('active',1)->orderBy('created_at', 'DESC')->get();
-        return response()->json($articles, 200);
+//        $posts = Blog::where('active',1)->orderBy('created_at', 'DESC')->get();
+
+        $posts = Blog::where([
+            ['blogs.active', '1']
+        ])
+            ->join('users', 'users.id','=', 'blogs.user_id')
+            ->select('blogs.title'
+                ,'blogs.body'
+                ,'users.name as username'
+                ,'blogs.updated_at'
+                ,'blogs.created_at'
+                ,'blogs.id'
+                ,'blogs.active'
+                )
+            ->orderBy('blogs.updated_at', 'desc')
+            ->get();
+
+
+        return response()->json(BlogResource::collection($posts), 200);
     }
-    
-    
-    
+
+
+
 /*показать  для определённого пользователя статьи*/
 	public function show_for_user($user_id)
 	{
-		
-       
-        
+
+
+
         $articles = DB::table('blogs')->where('blogs.user_id', $user_id)
     		// ->join('blogs', 'blogs.id', '=', 'blogs.category_id')
     		->orderBy('blogs.updated_at', 'desc')
     		->get();
-        
-        
-        
+
+
+
         return response()->json($articles, 200);
 	}
-	
+
     /**
      * Show the form for creating a new resource.
      *
